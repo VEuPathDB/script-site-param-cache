@@ -1,0 +1,39 @@
+= Site Param Cache Loader
+
+A simple script that runs all the searches it can to populate param caches on a
+newly built site.
+
+== Usage
+
+.Printing Help Text
+[source, bash-session]
+----
+➜  bin/param-cache -h
+[2020-04-01T02:18:21.534623679-04:00] INFO  Parsing & Validating Configuration
+Usage:
+param-cache [OPTIONS] URL
+
+Application Options:
+  -v, --verbose          Enable verbose log output
+  -t, --threads=         Number of threads to run on (default: 16)
+      --auth=auth_tkt    QA Auth Token
+
+Help Options:
+  -h, --help             Show this help message
+
+Arguments:
+  URL:                   Site URL
+                         Example: https://plasmodb.org
+----
+
+.Running
+[source, bash-session]
+----
+➜  bin/param-cache https://clinepidb.org
+----
+
+.Running on QA
+[source, bash-session]
+----
+➜  bin/param-cache https://qa.clinepidb.org --auth=<some-auth-token>
+----
