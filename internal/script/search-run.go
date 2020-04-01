@@ -11,12 +11,6 @@ import (
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 )
 
-const (
-	warnNogo = `Cannot run search with "%s" parameter.
-              Search Name: %s
-              Record Type: %s`
-)
-
 var (
 	disallowedParamNames = map[string]bool{
 		"primaryKeys": false, // can't auto-populate this
@@ -56,11 +50,7 @@ func (r *Runner) processSearch(
 		}
 
 		if code != http.StatusOK {
-			body, _ := res.GetBody()
-			b, _ := json.Marshal(search)
-			c, _ := json.Marshal(inputBody)
-			log.ErrorFmt("Request failed with code %d\nURL:     %s\nMessage: %s\nSearch:  %s\nPayload: %s",
-				code, fullUrl, string(body), b, c)
+			postReqError(code, fullUrl, res.MustGetBody(), search, inputBody)
 		} else {
 			log.TraceFmt("Finished record-types/%s/searches/%s/reports/standard %d",
 				record.UrlSegment, search.SearchData.UrlSegment, code)
@@ -79,14 +69,12 @@ func prepareSearchRequest(
 		tmp := &search.Parameters[i]
 
 		if _, ok := disallowedParamNames[tmp.Name]; ok {
-			log.TraceFmt(warnNogo, "name: "+tmp.Name, search.UrlSegment,
-				record.UrlSegment)
+			warnNoGo("name: "+tmp.Name, search, record)
 			return nil, false
 		}
 
 		if _, ok := disallowedParamTypes[tmp.Type]; ok {
-			log.TraceFmt(warnNogo, "type: "+tmp.Type, search.UrlSegment,
-				record.UrlSegment)
+			warnNoGo("type: "+tmp.Type, search, record)
 			return nil, false
 		}
 
@@ -137,8 +125,7 @@ func treeBoxParam(
 	err := json.Unmarshal(param.Vocabulary, voc)
 
 	if err != nil {
-		b, _ := json.Marshal(search)
-		log.ErrorFmt("Failed to parse vocabulary for tree box.\nSearch: %s", string(b))
+		vocabParseErr("tree box", search)
 		return "", false
 	}
 
@@ -157,8 +144,7 @@ func enumParam(
 	err := json.Unmarshal(param.Vocabulary, &voc)
 
 	if err != nil {
-		b, _ := json.Marshal(search)
-		log.ErrorFmt("Failed to parse vocabulary for tree box.\nSearch: %s", string(b))
+		vocabParseErr("enum param", search)
 		return "", false
 	}
 

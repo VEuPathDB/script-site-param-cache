@@ -33,9 +33,7 @@ func (r *Runner) processShortSearch(
 		}
 
 		if code != http.StatusOK {
-			body, _ := res.GetBody()
-			log.ErrorFmt("Request failed with code %d\nURL:  %s\nBody: %s", code,
-				fullUrl, string(body))
+			getReqError(code, fullUrl, res.MustGetBody())
 			return
 		}
 
