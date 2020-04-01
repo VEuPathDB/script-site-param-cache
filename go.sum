@@ -1,7 +1,7 @@
 github.com/Foxcapades/Go-ChainRequest v2.4.0+incompatible h1:/rdvEkgwjVaoUHxaIEamOvEl11EpcpZ3eSwoZQSf/Pw=
 github.com/Foxcapades/Go-ChainRequest v2.4.0+incompatible/go.mod h1:sKBa2PYX7hjF4rQLnUKUPj2QuhTUm417vKB/oqDeXJE=
-github.com/VEuPathDB/lib-go-rest-types v0.1.4 h1:bYOBGYn9FYz4RGHfoht0blAxTN6b+5Mg9R7/FZHgFnk=
-github.com/VEuPathDB/lib-go-rest-types v0.1.4/go.mod h1:O7nKy0LMNPMHyj12bE4IvuZ2vfZ9j4WaIs72uk7wMNQ=
+github.com/VEuPathDB/lib-go-rest-types v0.1.5 h1:k+FZf+XwO6ugtllqvPwDc8jB8sRymJ1VW9cCp5kzfkg=
+github.com/VEuPathDB/lib-go-rest-types v0.1.5/go.mod h1:O7nKy0LMNPMHyj12bE4IvuZ2vfZ9j4WaIs72uk7wMNQ=
 github.com/gammazero/deque v0.0.0-20200227231300-1e9af0e52b46 h1:iX4+rD9Fjdx8SkmSO/O5WAIX/j79ll3kuqv5VdYt9J8=
 github.com/gammazero/deque v0.0.0-20200227231300-1e9af0e52b46/go.mod h1:D90+MBHVc9Sk1lJAbEVgws0eYEurY4mv2TDso3Nxh3w=
 github.com/gammazero/workerpool v0.0.0-20200311205957-7b00833861c6 h1:1Cy/haf7XO4OyrkGid0Wq5CMluIErbvDptVAt8UTy38=

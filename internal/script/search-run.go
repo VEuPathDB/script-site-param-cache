@@ -43,7 +43,6 @@ func (r *Runner) processSearch(
 			return
 		}
 
-
 		res := R.PostRequest(fullUrl).
 			SetHeader(header.CONTENT_TYPE, "application/json").
 			MarshalBody(inputBody, R.MarshallerFunc(json.Marshal)).
@@ -80,27 +79,88 @@ func prepareSearchRequest(
 		tmp := &search.Parameters[i]
 
 		if _, ok := disallowedParamNames[tmp.Name]; ok {
-			log.WarnFmt(warnNogo, "name: " + tmp.Name, search.UrlSegment,
+			log.TraceFmt(warnNogo, "name: "+tmp.Name, search.UrlSegment,
 				record.UrlSegment)
 			return nil, false
 		}
 
 		if _, ok := disallowedParamTypes[tmp.Type]; ok {
-			log.WarnFmt(warnNogo, "type: " + tmp.Type, search.UrlSegment,
+			log.TraceFmt(warnNogo, "type: "+tmp.Type, search.UrlSegment,
 				record.UrlSegment)
 			return nil, false
 		}
 
+		if tmp.Type == "multi-pick-vocabulary" {
+
+			if tmp.Vocabulary == nil {
+				out.SearchConfig.Parameters[tmp.Name] = `["yes"]`
+				continue
+			}
+
+			if tmp.DisplayType != nil {
+				switch *tmp.DisplayType {
+				case "treeBox":
+					if val, ok := treeBoxParam(tmp, search); ok {
+						out.SearchConfig.Parameters[tmp.Name] = val
+						continue
+					} else {
+						return nil, false
+					}
+				case "typeAhead", "checkBox":
+					if val, ok := enumParam(tmp, search); ok {
+						out.SearchConfig.Parameters[tmp.Name] = val
+						continue
+					} else {
+						return nil, false
+					}
+				}
+			}
+		}
+
 		if len(tmp.InitialDisplayValue) > 0 {
 			out.SearchConfig.Parameters[tmp.Name] = tmp.InitialDisplayValue
-		} else if tmp.Type == "multi-pick-vocabulary" {
-			out.SearchConfig.Parameters[tmp.Name] = `["yes"]`
 		} else {
-			out.SearchConfig.Parameters[tmp.Name] = "yes"
+			out.SearchConfig.Parameters[tmp.Name] = "1"
 		}
 	}
 
 	out.ReportConfig.Attributes = search.DefaultAttributes
 
 	return out, true
+}
+
+func treeBoxParam(
+	param *recordtypes.Parameter,
+	search *recordtypes.Search,
+) (val string, ok bool) {
+	voc := new(recordtypes.EnumParamTermNode)
+	err := json.Unmarshal(param.Vocabulary, voc)
+
+	if err != nil {
+		b, _ := json.Marshal(search)
+		log.ErrorFmt("Failed to parse vocabulary for tree box.\nSearch: %s", string(b))
+		return "", false
+	}
+
+	if voc.Data.Term == "@@fake@@" && len(voc.Children) > 0 {
+		voc = &voc.Children[0]
+	}
+
+	return `["` + voc.Data.Term + `"]`, true
+}
+
+func enumParam(
+	param *recordtypes.Parameter,
+	search *recordtypes.Search,
+) (val string, ok bool) {
+	voc := make([][3]string, 0, 15)
+	err := json.Unmarshal(param.Vocabulary, &voc)
+
+	if err != nil {
+		b, _ := json.Marshal(search)
+		log.ErrorFmt("Failed to parse vocabulary for tree box.\nSearch: %s", string(b))
+		return "", false
+	}
+
+	return `["` + voc[0][0] + `"]`, true
 }
