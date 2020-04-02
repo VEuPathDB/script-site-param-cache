@@ -1,5 +1,8 @@
 = Site Param Cache Loader
 
+image:https://img.shields.io/travis/VEuPathDB/script-site-param-cache[Travis (.org),link=https://www.travis-ci.org/github/VEuPathDB/script-site-param-cache]
+image:https://img.shields.io/github/v/release/VEuPathDB/script-site-param-cache[GitHub release (latest SemVer),link=https://github.com/VEuPathDB/script-site-param-cache/releases/latest]
+
 A simple script that runs all the searches it can to populate param caches on a
 newly built site.
 
