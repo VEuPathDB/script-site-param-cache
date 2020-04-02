@@ -30,7 +30,9 @@ readonly BINARY_NAME="param-cache"
 # Execution Time
 #
 readonly FILE_URL="$(curl -s "${REPO_TARGET}" \
-  | jq -r '.assets[].browser_download_url | select(. | match("'"${OS}"'"))')"
+  | grep "browser_download_url" \
+  | grep "${OS}" \
+  | cut -d '"' -f 4)"
 readonly FILE_NAME="$(basename "${FILE_URL}")"
 
 
