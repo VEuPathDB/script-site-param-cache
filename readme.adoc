@@ -6,6 +6,21 @@ image:https://img.shields.io/github/v/release/VEuPathDB/script-site-param-cache[
 A simple script that runs all the searches it can to populate param caches on a
 newly built site.
 
+== Quick Start
+
+.Download and runs the latest version of the script automatically
+[source, bash-session]
+----
+$ curl https://raw.githubusercontent.com/VEuPathDB/script-site-param-cache/master/latest.sh \
+  | bash -s -- [ARGS] URL
+----
+
+`[ARGS]`::
+  Zero or more of the args specified in the help text below
+`URL`::
+  URL to the site to run against.  The url must be prefixed with `http://` or
+  `https://`.
+
 == Usage
 
 .Printing Help Text
