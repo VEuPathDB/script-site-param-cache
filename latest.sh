@@ -4,7 +4,6 @@
 # Verification
 #
 if [ -z "$@" ]; then
-  echo
   echo "At least one argument containing either the site url or \"-h\" required"
   exit 1
 fi
