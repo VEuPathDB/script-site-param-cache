@@ -1,6 +1,7 @@
 language: go
 
-version: "1.14"
+go:
+  - 1.14.x
 
 env:
   - GO111MODULE=on
