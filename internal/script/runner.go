@@ -2,6 +2,7 @@ package script
 
 import (
 	"github.com/gammazero/workerpool"
+	"net/http"
 	"sync"
 	"time"
 
@@ -19,6 +20,8 @@ type Runner struct {
 	lock   sync.RWMutex
 	wp     *workerpool.WorkerPool
 	url    veupath.ApiUrlBuilder
+	opts   *config.CliOptions
+	client http.Client
 }
 
 func NewRunner(opt *config.CliOptions) (runner *Runner) {
@@ -26,6 +29,8 @@ func NewRunner(opt *config.CliOptions) (runner *Runner) {
 		queued: make(map[string]*status),
 		wp:     workerpool.New(int(opt.Threads)),
 		url:    veupath.NewApiUrlBuilder(opt.Positional.Url),
+		opts:   opt,
+		client: http.Client{Timeout: time.Duration(opt.RequestTimeout)},
 	}
 	runner.url.SetAuthTkt(opt.Auth)
 	return

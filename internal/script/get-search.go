@@ -24,7 +24,7 @@ func (r *Runner) processShortSearch(
 		log.TraceFmt("Fetching full search data for search %s on record-type %s",
 			sSearch.UrlSegment, record.UrlSegment)
 
-		res := R.GetRequest(fullUrl).Submit()
+		res := R.GetRequest(fullUrl).SetHttpClient(&r.client).Submit()
 		code, err := res.GetResponseCode()
 
 		if err != nil {
@@ -44,6 +44,8 @@ func (r *Runner) processShortSearch(
 			return
 		}
 
-		r.processSearch(record, search)
+		if r.opts.RunSearches {
+			r.processSearch(record, search)
+		}
 	})
 }

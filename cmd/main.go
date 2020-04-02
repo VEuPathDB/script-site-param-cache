@@ -10,11 +10,12 @@ import (
 )
 
 func main() {
+	var opts *config.CliOptions
 	defer recov()
 	start := time.Now()
 	log.Info("Parsing & Validating Configuration")
 
-	opts := config.ParseCliOptions()
+	opts = config.ParseCliOptions()
 	opts.Validate()
 	log.ConfigureLogger(opts)
 

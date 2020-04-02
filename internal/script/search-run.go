@@ -37,7 +37,7 @@ func (r *Runner) processSearch(
 			return
 		}
 
-		res := R.PostRequest(fullUrl).
+		res := R.PostRequest(fullUrl).SetHttpClient(&r.client).
 			SetHeader(header.CONTENT_TYPE, "application/json").
 			MarshalBody(inputBody, R.MarshallerFunc(json.Marshal)).
 			Submit()

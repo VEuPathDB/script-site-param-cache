@@ -34,7 +34,7 @@ func postReqError(
 ) {
 	sea, _ := json.Marshal(search)
 	pay, _ := json.Marshal(payload)
-	log.ErrorFmt(_postReqErr, code, string(response), url, sea, pay)
+	log.ErrorFmt(_postReqErr, code, url, string(response), sea, pay)
 }
 
 func getReqError(code uint16, url string, response []byte) {

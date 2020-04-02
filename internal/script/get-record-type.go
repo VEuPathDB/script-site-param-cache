@@ -12,6 +12,7 @@ import (
 
 func (r *Runner) processRecordType(rType string) {
 	fullUrl := r.url.RecordTypeUrl(rType)
+
 	r.push(fullUrl)
 	r.wp.Submit(func() {
 		r.start(fullUrl)
@@ -21,7 +22,7 @@ func (r *Runner) processRecordType(rType string) {
 
 		log.TraceFmt("Looking up searches for record type %s", rType)
 
-		res       := R.GetRequest(fullUrl).Submit()
+		res       := R.GetRequest(fullUrl).SetHttpClient(&r.client).Submit()
 		code, err := res.GetResponseCode()
 
 		if err != nil {

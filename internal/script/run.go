@@ -15,7 +15,8 @@ func (r *Runner) Run() {
 	recordTypes := make([]string, 0, 25)
 
 	x.FailFast(R.GetRequest(r.url.RecordTypeListUrl()).
-		Submit().UnmarshalBody(&recordTypes, R.UnmarshallerFunc(json.Unmarshal)))
+		SetHttpClient(&r.client).Submit().
+		UnmarshalBody(&recordTypes, R.UnmarshallerFunc(json.Unmarshal)))
 
 	for _, rType := range recordTypes {
 		r.processRecordType(rType)
