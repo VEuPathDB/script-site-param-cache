@@ -1,0 +1,23 @@
+language: go
+
+version: 1.14.x
+
+env:
+  - GO111MODULE=on
+
+script:
+  - make travis
+  - ls -l bin
+
+deploy:
+  provider: releases
+  api_key:
+    secure: GR9oxg1v6lsGfKa5xF2PqMYt5uu9ixKI+VHt7CUmhfZ/uToYQV/EVBXN5/28JLkCVGI07oAvU0g0GGI3da/Gbznoj9eFo+gvQuOzylBjdBSM/9cXwRH1oKUi3N+fu6qWP+7+0ZOqTN78qTAxZlStI1bmdeQ/XT1Bhzb555Os/6fE6Rz+vGhjPJjCw6p3sMEgvVmyqq6R4GenB8SUwAIKAQ5WbwwsmNXRKHXk3VaoI4V7unfX32LMcZFescLH9aTS5eXYCZxbA9mbD9x7xOzWBYKMw27447yiB9AXQwF1gCJ5v41KeHxf/has+b52ImwkXhu2hcK+xs/vHmrUFfYRUmFEfpVhp0TjK492IIVAjs0AQW+DV1dWzkDFqvt4YQOQWMpE2QvlVSXBa4OYTczZZ/5RBfeS443byu9F/Vm7+jqWvnKgqwoBHcNTo/4HP++BNF+T7kDP/5od/MQgwYa3I4jWCvelXz5rBtgkxHRiyALyM5JCnijL35Azo/v7o6pe8J+dFPfuNpakJnwY7IHz1rvPDranAIT6gSCXadjZMr5Xlgl73k12kpku5jeBrxsorZvzxmUPyyZzPdXiKvsPb3Wlpl0lT7JvAQPFsGry+KI714T+x6VrcGMHXrwri88R15/Ao62Yu+QcPvjyWsOQYsp/36oq8J9RbEcycTFoJ5E=
+  skip_cleanup: true
+  file:
+    - bin/param-cache-darwin.${TRAVIS_TAG}.tar.gz
+    - bin/param-cache-linux.${TRAVIS_TAG}.tar.gz
+    - bin/param-cache-windows.${TRAVIS_TAG}.zip
+  on:
+    repo: VEuPathDB/script-site-param-cache
+    tags: true
