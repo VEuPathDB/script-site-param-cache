@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Foxcapades/Go-ChainRequest/request/header"
-	R "github.com/Foxcapades/Go-ChainRequest/simple"
-
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
-	"github.com/VEuPathDB/script-site-param-cache/internal/log"
+	"github.com/VEuPathDB/script-site-param-cache/internal/util"
+	"github.com/VEuPathDB/script-site-param-cache/internal/x"
 )
 
 var (
@@ -26,36 +24,24 @@ func (r *Runner) processSearch(
 	search *recordtypes.FullSearch,
 ) {
 	fullUrl := r.url.RecordSearchStdReportUrl(record.UrlSegment, search.SearchData.UrlSegment)
+
 	r.push(fullUrl)
-	r.wp.Submit(func() {
+
+	r.wp.Submit(x.PanicCatcher(func() {
 		r.start(fullUrl)
 		defer r.pop(fullUrl)
-		log.TraceFmt("Running search %s for record type %s", search.SearchData.UrlSegment, record.UrlSegment)
 
 		inputBody, ok := prepareSearchRequest(record, &search.SearchData)
 		if !ok {
 			return
 		}
 
-		res := R.PostRequest(fullUrl).SetHttpClient(&r.client).
-			SetHeader(header.CONTENT_TYPE, "application/json").
-			MarshalBody(inputBody, R.MarshallerFunc(json.Marshal)).
-			Submit()
+		res := util.PostRequest(fullUrl, &r.client, inputBody)
 
-		code, err := res.GetResponseCode()
-
-		if err != nil {
-			log.Error(err)
-			return
-		}
-
-		if code != http.StatusOK {
+		if code := res.MustGetResponseCode(); code != http.StatusOK {
 			postReqError(code, fullUrl, res.MustGetBody(), search, inputBody)
-		} else {
-			log.TraceFmt("Finished record-types/%s/searches/%s/reports/standard %d",
-				record.UrlSegment, search.SearchData.UrlSegment, code)
 		}
-	})
+	}))
 }
 
 func prepareSearchRequest(

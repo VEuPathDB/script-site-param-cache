@@ -31,19 +31,23 @@ Usage:
   param-cache [OPTIONS] URL
 
 Application Options:
-  -v, --verbose          Enable verbose log output
+  -v, --verbose          Enable verbose log output. Can be specified a second time for more verbose
+                         logging
   -p, --parallel=        Number of threads to run on (default: 16)
       --auth=auth_tkt    QA Auth Token.
-                         This can be retrieved by logging in to a QA site and pulling the value from either the "auth_tkt" query parameter or the cookie with same name.
+                         This can be retrieved by logging in to a QA site and pulling the value from
+                         either the "auth_tkt" query parameter or the cookie with same name.
   -r, --run-searches     Set to attempt to run all the searches
   -t, --timeout=         Max duration cap on individual requests.
-                         Formatted as <num><unit>[<num><unit>...] for example "5m" for five minutes or "2m30s" for two minutes and thirty seconds.
+                         Formatted as <num><unit>[<num><unit>...] for example "5m" for five minutes
+                         or "2m30s" for two minutes and thirty seconds.
 
                          Valid units are:
                          ms = milliseconds
                          s  = seconds
                          m  = minutes
-                         h  = hours (default: 10m)
+                         h  = hours
+                         (default: 10m)
 
 Help Options:
   -h, --help             Show this help message

@@ -7,7 +7,8 @@ import (
 	R "github.com/Foxcapades/Go-ChainRequest/simple"
 
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
-	"github.com/VEuPathDB/script-site-param-cache/internal/log"
+	"github.com/VEuPathDB/script-site-param-cache/internal/util"
+	"github.com/VEuPathDB/script-site-param-cache/internal/x"
 )
 
 func (r *Runner) processShortSearch(
@@ -16,36 +17,22 @@ func (r *Runner) processShortSearch(
 ) {
 	fullUrl := r.url.RecordSearchUrl(record.UrlSegment, sSearch.UrlSegment)
 	r.push(fullUrl)
-	r.wp.Submit(func() {
+	r.wp.Submit(x.PanicCatcher(func() {
 		r.start(fullUrl)
 		defer r.pop(fullUrl)
 		search  := new(recordtypes.FullSearch)
 
-		log.TraceFmt("Fetching full search data for search %s on record-type %s",
-			sSearch.UrlSegment, record.UrlSegment)
+		res := util.GetRequest(fullUrl, &r.client)
 
-		res := R.GetRequest(fullUrl).SetHttpClient(&r.client).Submit()
-		code, err := res.GetResponseCode()
-
-		if err != nil {
-			log.Error(err.Error())
-			return
-		}
-
-		if code != http.StatusOK {
+		if code := res.MustGetResponseCode(); code != http.StatusOK {
 			getReqError(code, fullUrl, res.MustGetBody())
 			return
 		}
 
-		err = res.UnmarshalBody(&search, R.UnmarshallerFunc(json.Unmarshal))
+		res.MustUnmarshalBody(&search, R.UnmarshallerFunc(json.Unmarshal))
 
-		if err != nil {
-			log.Error(err.Error())
-			return
-		}
-
-		if r.opts.RunSearches {
+		if r.opts.SearchEnabled() {
 			r.processSearch(record, search)
 		}
-	})
+	}))
 }

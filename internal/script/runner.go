@@ -1,10 +1,12 @@
 package script
 
 import (
-	"github.com/gammazero/workerpool"
+	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/gammazero/workerpool"
 
 	"github.com/VEuPathDB/lib-go-rest-types/veupath"
 	"github.com/VEuPathDB/script-site-param-cache/internal/config"
@@ -20,19 +22,20 @@ type Runner struct {
 	lock   sync.RWMutex
 	wp     *workerpool.WorkerPool
 	url    veupath.ApiUrlBuilder
-	opts   *config.CliOptions
+	opts   config.CliOptions
 	client http.Client
 }
 
-func NewRunner(opt *config.CliOptions) (runner *Runner) {
+func NewRunner(opt config.CliOptions) (runner *Runner) {
 	runner = &Runner{
 		queued: make(map[string]*status),
-		wp:     workerpool.New(int(opt.Threads)),
-		url:    veupath.NewApiUrlBuilder(opt.Positional.Url),
+		wp:     workerpool.New(int(opt.Threads())),
+		url:    veupath.NewApiUrlBuilder(opt.BaseUrl()),
 		opts:   opt,
-		client: http.Client{Timeout: time.Duration(opt.RequestTimeout)},
+		client: http.Client{Timeout: opt.RequestTimeout()},
 	}
-	runner.url.SetAuthTkt(opt.Auth)
+	runner.url.SetAuthTkt(opt.AuthToken())
+	printSetup(runner)
 	return
 }
 
@@ -65,4 +68,18 @@ func (r *Runner) queueLen() (out int) {
 	out = len(r.queued)
 	r.lock.RUnlock()
 	return
+}
+
+func printSetup(r *Runner) {
+	log.Debug("Setting up runner")
+	log.TraceFmt(
+		`Base URL:     %s
+     Timeout:      %s
+     Threads:      %d
+     Run Searches: %t`,
+		r.opts.BaseUrl(),
+		r.opts.RequestTimeout(),
+		r.opts.Threads(),
+		r.opts.SearchEnabled(),
+	)
 }

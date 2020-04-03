@@ -7,43 +7,31 @@ import (
 	R "github.com/Foxcapades/Go-ChainRequest/simple"
 
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
-	"github.com/VEuPathDB/script-site-param-cache/internal/log"
+	"github.com/VEuPathDB/script-site-param-cache/internal/util"
+	"github.com/VEuPathDB/script-site-param-cache/internal/x"
 )
 
 func (r *Runner) processRecordType(rType string) {
 	fullUrl := r.url.RecordTypeUrl(rType)
 
 	r.push(fullUrl)
-	r.wp.Submit(func() {
-		r.start(fullUrl)
+	r.wp.Submit(x.PanicCatcher(func() {
 		defer r.pop(fullUrl)
+		r.start(fullUrl)
 
 		record  := new(recordtypes.RecordType)
 
-		log.TraceFmt("Looking up searches for record type %s", rType)
 
-		res       := R.GetRequest(fullUrl).SetHttpClient(&r.client).Submit()
-		code, err := res.GetResponseCode()
-
-		if err != nil {
-			log.ErrorFmt(err.Error())
-			return
-		}
-
-		if code != http.StatusOK {
+		res := util.GetRequest(fullUrl, &r.client)
+		if code := res.MustGetResponseCode(); code != http.StatusOK {
 			getReqError(code, fullUrl, res.MustGetBody())
 			return
 		}
 
-		err = res.UnmarshalBody(record, R.UnmarshallerFunc(json.Unmarshal))
-
-		if err != nil {
-			log.ErrorFmt(err.Error())
-			return
-		}
+		res.MustUnmarshalBody(record, R.UnmarshallerFunc(json.Unmarshal))
 
 		for i := range record.Searches {
 			r.processShortSearch(record, &record.Searches[i])
 		}
-	})
+	}))
 }

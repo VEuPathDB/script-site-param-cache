@@ -1,32 +1,24 @@
 package main
 
 import (
-	"os"
 	"time"
 
 	"github.com/VEuPathDB/script-site-param-cache/internal/config"
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 	"github.com/VEuPathDB/script-site-param-cache/internal/script"
+	"github.com/VEuPathDB/script-site-param-cache/internal/x"
 )
 
 func main() {
-	var opts *config.CliOptions
-	defer recov()
+	defer x.PanicRecovery()
 	start := time.Now()
-	log.Info("Parsing & Validating Configuration")
+	opts, validator := config.GetCliOptions()
 
-	opts = config.ParseCliOptions()
-	opts.Validate()
-	log.ConfigureLogger(opts)
-
+	log.SetVerbosity(opts.VerboseLevel())
 	log.Info("Running script")
-	script.NewRunner(opts).Run()
-	log.InfoFmt("Completed in %s", time.Now().Sub(start))
-}
 
-func recov() {
-	if rec := recover(); rec != nil {
-		log.ErrorFmt("%s", rec)
-		os.Exit(1)
-	}
+	validator()
+	script.NewRunner(opts).Run()
+
+	log.InfoFmt("Completed in %s", time.Now().Sub(start))
 }
