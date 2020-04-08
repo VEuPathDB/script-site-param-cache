@@ -16,12 +16,12 @@ const (
 )
 
 func PostRequest(
-	url    string,
+	url string,
 	client *http.Client,
-	body   interface{},
+	body interface{},
 ) (res creq.Response) {
 	start := time.Now()
-	defer func() {printRequestStats(http.MethodPost, url, start, res)}()
+	defer func() { printRequestStats(http.MethodPost, url, start, res) }()
 	printRequestStart(http.MethodPost, url, body)
 
 	res = req.PostRequest(url).SetHeader(header.CONTENT_TYPE, "application/json").
@@ -32,7 +32,7 @@ func PostRequest(
 
 func GetRequest(url string, client *http.Client) (res creq.Response) {
 	start := time.Now()
-	defer func() {printRequestStats(http.MethodGet, url, start, res)}()
+	defer func() { printRequestStats(http.MethodGet, url, start, res) }()
 	printRequestStart(http.MethodGet, url, nil)
 
 	res = req.GetRequest(url).SetHttpClient(client).Submit()
@@ -66,6 +66,8 @@ func printRequestStats(method, url string, start time.Time, res creq.Response) {
 	}
 
 	log.DebugFmt(reqEndText, method, "completed", succ, url, dur)
-	log.TraceFn(func() []interface{} {return []interface{}{
-		"Message Body:", string(res.MustGetBody())}})
+	log.TraceFn(func() []interface{} {
+		return []interface{}{
+			"Message Body:", string(res.MustGetBody())}
+	})
 }

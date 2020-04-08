@@ -17,7 +17,6 @@ func ParseFlags(val interface{}) []string {
 	return out
 }
 
-
 func FailFast(err error) {
 	if err != nil {
 		panic(err)

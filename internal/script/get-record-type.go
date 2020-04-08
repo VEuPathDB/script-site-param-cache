@@ -19,8 +19,7 @@ func (r *Runner) processRecordType(rType string) {
 		defer r.pop(fullUrl)
 		r.start(fullUrl)
 
-		record  := new(recordtypes.RecordType)
-
+		record := new(recordtypes.RecordType)
 
 		res := util.GetRequest(fullUrl, &r.client)
 		if code := res.MustGetResponseCode(); code != http.StatusOK {

@@ -34,7 +34,7 @@ func (r *Runner) Run() {
 func enableOsSignalHandler(r *Runner) {
 	ch := make(chan os.Signal)
 	go func() {
-		<- ch
+		<-ch
 		r.lock.RLock()
 
 		now := time.Now()
@@ -50,4 +50,3 @@ func enableOsSignalHandler(r *Runner) {
 	}()
 	signal.Notify(ch, os.Interrupt)
 }
-

@@ -26,11 +26,11 @@ const (
 )
 
 func postReqError(
-	code     uint16,
-	url      string,
+	code uint16,
+	url string,
 	response []byte,
-	search   *recordtypes.FullSearch,
-	payload  *recordtypes.OrganismSearchRequest,
+	search *recordtypes.FullSearch,
+	payload *recordtypes.OrganismSearchRequest,
 ) {
 	sea, _ := json.Marshal(search)
 	pay, _ := json.Marshal(payload)
@@ -43,7 +43,7 @@ func getReqError(code uint16, url string, response []byte) {
 
 func warnNoGo(
 	identifier string,
-	search     *recordtypes.Search,
+	search *recordtypes.Search,
 	recordType *recordtypes.RecordType,
 ) {
 	log.TraceFmt(_warnNogo, identifier, search.UrlSegment, recordType.UrlSegment)

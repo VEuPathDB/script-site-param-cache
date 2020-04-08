@@ -27,7 +27,7 @@ var replace = regexp.MustCompile("\n[ \t]*")
 
 func init() {
 	buf := strings.Builder{}
-	ln  := len(timeStampFmt) + 8
+	ln := len(timeStampFmt) + 8
 
 	buf.Grow(ln)
 	buf.Reset()
@@ -44,33 +44,33 @@ func SetVerbosity(lvl uint8) {
 	verbose = lvl
 }
 
-func ErrorFmt(message string, vals... interface{}) {
+func ErrorFmt(message string, vals ...interface{}) {
 	_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixError,
 		nlPad(fmt.Sprintf(message, vals...)))
 }
 
-func Error(vals... interface{}) {
+func Error(vals ...interface{}) {
 	_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixError, nlPad(fmt.Sprint(vals...)))
 }
 
-func WarnFmt(message string, vals... interface{}) {
+func WarnFmt(message string, vals ...interface{}) {
 	_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixWarn,
 		nlPad(fmt.Sprintf(message, vals...)))
 }
 
-func Warn(vals... interface{}) {
+func Warn(vals ...interface{}) {
 	_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixWarn, nlPad(fmt.Sprint(vals...)))
 }
 
-func InfoFmt(message string, vals... interface{}) {
+func InfoFmt(message string, vals ...interface{}) {
 	fmt.Println(nowStamp(), prefixInfo, nlPad(fmt.Sprintf(message, vals...)))
 }
 
-func Info(vals... interface{}) {
+func Info(vals ...interface{}) {
 	fmt.Println(nowStamp(), prefixInfo, nlPad(fmt.Sprint(vals...)))
 }
 
-func DebugFmt(message string, vals... interface{}) {
+func DebugFmt(message string, vals ...interface{}) {
 	if verbose > 0 {
 		fmt.Println(nowStamp(), prefixDebug, nlPad(fmt.Sprintf(message, vals...)))
 	}
@@ -82,13 +82,13 @@ func Debug(vals ...interface{}) {
 	}
 }
 
-func TraceFmt(message string, vals... interface{}) {
+func TraceFmt(message string, vals ...interface{}) {
 	if verbose > 1 {
 		fmt.Println(nowStamp(), prefixTrace, nlPad(fmt.Sprintf(message, vals...)))
 	}
 }
 
-func Trace(vals... interface{}) {
+func Trace(vals ...interface{}) {
 	if verbose > 1 {
 		fmt.Println(nowStamp(), prefixTrace, nlPad(fmt.Sprint(vals...)))
 	}

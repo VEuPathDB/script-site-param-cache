@@ -12,7 +12,7 @@ import (
 )
 
 func (r *Runner) processShortSearch(
-	record  *recordtypes.RecordType,
+	record *recordtypes.RecordType,
 	sSearch *recordtypes.Search,
 ) {
 	fullUrl := r.url.RecordSearchUrl(record.UrlSegment, sSearch.UrlSegment)
@@ -20,7 +20,7 @@ func (r *Runner) processShortSearch(
 	r.wp.Submit(x.PanicCatcher(func() {
 		r.start(fullUrl)
 		defer r.pop(fullUrl)
-		search  := new(recordtypes.FullSearch)
+		search := new(recordtypes.FullSearch)
 
 		res := util.GetRequest(fullUrl, &r.client)
 

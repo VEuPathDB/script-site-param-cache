@@ -15,7 +15,6 @@ func init() {
 	staticOptions = parseCliOptions()
 }
 
-
 type CliOptions interface {
 	VerboseLevel() uint8
 	Threads() uint8
@@ -43,7 +42,7 @@ type cliOptions struct {
 	ReqTimeout RequestTimeout `short:"t" long:"timeout" default:"10m" description:"Max duration cap on individual requests.\nFormatted as <num><unit>[<num><unit>...] for example \"5m\" for five minutes or \"2m30s\" for two minutes and thirty seconds.\n\nValid units are:\n  ms = milliseconds\n  s  = seconds\n  m  = minutes\n  h  = hours\n"`
 
 	Positional struct {
-		Url  string `positional-arg-name:"URL" description:"Site URL\nExample: https://plasmodb.org"`
+		Url string `positional-arg-name:"URL" description:"Site URL\nExample: https://plasmodb.org"`
 	} `positional-args:"yes" required:"1"`
 }
 
