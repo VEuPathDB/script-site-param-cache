@@ -25,22 +25,23 @@ readonly REPO_API_PATH="${GITHUB_API_PATH}/repos/VEuPathDB/script-site-param-cac
 readonly REPO_TARGET="${REPO_API_PATH}/releases/latest"
 readonly BINARY_NAME="param-cache"
 
+#
+# Download tool if not exists
+#
+if [ ! -f "${BINARY_NAME}" ]; then
+  readonly FILE_URL="$(curl -s "${REPO_TARGET}" \
+    | grep "browser_download_url" \
+    | grep "${OS}" \
+    | cut -d '"' -f 4)"
+  readonly FILE_NAME="$(basename "${FILE_URL}")"
+
+  wget -q "${FILE_URL}" \
+    && tar -xzf "${FILE_NAME}" \
+    && rm "${FILE_NAME}"
+fi
+
 
 #
-# Execution Time
+# Run
 #
-readonly FILE_URL="$(curl -s "${REPO_TARGET}" \
-  | grep "browser_download_url" \
-  | grep "${OS}" \
-  | cut -d '"' -f 4)"
-readonly FILE_NAME="$(basename "${FILE_URL}")"
-
-
-#
-# Download and run the tool
-#
-wget -q "${FILE_URL}" \
-  && tar -xzf "${FILE_NAME}" \
-  && rm "${FILE_NAME}" \
-  && ./param-cache $@
-rm -rf ./param-cache
+./${BINARY_NAME} $@
