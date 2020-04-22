@@ -5,12 +5,14 @@ import (
 	"net/http"
 
 	R "github.com/Foxcapades/Go-ChainRequest/simple"
-
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
+
+	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"github.com/VEuPathDB/script-site-param-cache/internal/util"
 	"github.com/VEuPathDB/script-site-param-cache/internal/x"
 )
 
+// retrieves the full json payload for a record type
 func (r *Runner) processRecordType(rType string) {
 	fullUrl := r.url.RecordTypeUrl(rType)
 
@@ -23,7 +25,7 @@ func (r *Runner) processRecordType(rType string) {
 
 		res := util.GetRequest(fullUrl, &r.client)
 		if code := res.MustGetResponseCode(); code != http.StatusOK {
-			getReqError(code, fullUrl, res.MustGetBody())
+			out.GetRequestError(code, fullUrl, res.MustGetBody())
 			return
 		}
 

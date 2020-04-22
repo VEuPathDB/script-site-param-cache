@@ -2,6 +2,7 @@ package script
 
 import (
 	"encoding/json"
+	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"net/http"
 
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
@@ -39,7 +40,7 @@ func (r *Runner) processSearch(
 		res := util.PostRequest(fullUrl, &r.client, inputBody)
 
 		if code := res.MustGetResponseCode(); code != http.StatusOK {
-			postReqError(code, fullUrl, res.MustGetBody(), search, inputBody)
+			out.PostRequestError(code, fullUrl, res.MustGetBody(), search, inputBody)
 		}
 	}))
 }
@@ -47,27 +48,27 @@ func (r *Runner) processSearch(
 func prepareSearchRequest(
 	record *recordtypes.RecordType,
 	search *recordtypes.Search,
-) (out *recordtypes.OrganismSearchRequest, ok bool) {
-	out = recordtypes.NewOrganismSearchRequest()
+) (ret *recordtypes.OrganismSearchRequest, ok bool) {
+	ret = recordtypes.NewOrganismSearchRequest()
 
 	for i := range search.Parameters {
 
 		tmp := &search.Parameters[i]
 
 		if _, ok := disallowedParamNames[tmp.Name]; ok {
-			warnNoGo("name: "+tmp.Name, search, record)
+			out.WarnCannotRun("name: "+tmp.Name, search, record)
 			return nil, false
 		}
 
 		if _, ok := disallowedParamTypes[tmp.Type]; ok {
-			warnNoGo("type: "+tmp.Type, search, record)
+			out.WarnCannotRun("type: "+tmp.Type, search, record)
 			return nil, false
 		}
 
 		if tmp.Type == "multi-pick-vocabulary" {
 
 			if tmp.Vocabulary == nil {
-				out.SearchConfig.Parameters[tmp.Name] = `["yes"]`
+				ret.SearchConfig.Parameters[tmp.Name] = `["yes"]`
 				continue
 			}
 
@@ -75,14 +76,14 @@ func prepareSearchRequest(
 				switch *tmp.DisplayType {
 				case "treeBox":
 					if val, ok := treeBoxParam(tmp, search); ok {
-						out.SearchConfig.Parameters[tmp.Name] = val
+						ret.SearchConfig.Parameters[tmp.Name] = val
 						continue
 					} else {
 						return nil, false
 					}
 				case "typeAhead", "checkBox":
 					if val, ok := enumParam(tmp, search); ok {
-						out.SearchConfig.Parameters[tmp.Name] = val
+						ret.SearchConfig.Parameters[tmp.Name] = val
 						continue
 					} else {
 						return nil, false
@@ -92,15 +93,15 @@ func prepareSearchRequest(
 		}
 
 		if len(tmp.InitialDisplayValue) > 0 {
-			out.SearchConfig.Parameters[tmp.Name] = tmp.InitialDisplayValue
+			ret.SearchConfig.Parameters[tmp.Name] = tmp.InitialDisplayValue
 		} else {
-			out.SearchConfig.Parameters[tmp.Name] = "1"
+			ret.SearchConfig.Parameters[tmp.Name] = "1"
 		}
 	}
 
-	out.ReportConfig.Attributes = search.DefaultAttributes
+	ret.ReportConfig.Attributes = search.DefaultAttributes
 
-	return out, true
+	return ret, true
 }
 
 func treeBoxParam(
@@ -111,7 +112,7 @@ func treeBoxParam(
 	err := json.Unmarshal(param.Vocabulary, voc)
 
 	if err != nil {
-		vocabParseErr("tree box", search)
+		out.VocabParseErr("tree box", search)
 		return "", false
 	}
 
@@ -130,7 +131,7 @@ func enumParam(
 	err := json.Unmarshal(param.Vocabulary, &voc)
 
 	if err != nil {
-		vocabParseErr("enum param", search)
+		out.VocabParseErr("enum param", search)
 		return "", false
 	}
 

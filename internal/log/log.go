@@ -4,41 +4,37 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"strings"
 	"time"
+
+	"github.com/mattn/go-isatty"
 )
 
 var verbose uint8
 
-const (
-	prefixError = "\033[91mERROR\033[0m"
-	prefixWarn  = "\033[33mWARN \033[0m"
-	prefixInfo  = "\033[32mINFO \033[0m"
-	prefixDebug = "\033[36mDEBUG\033[0m"
-	prefixTrace = "\033[36mTRACE\033[0m"
+var (
+	prefixError = "ERROR"
+	prefixWarn  = "WARN "
+	prefixInfo  = "INFO "
+	prefixDebug = "DEBUG"
+	prefixTrace = "TRACE"
 )
+
+func init() {
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		prefixError = "\033[91mERROR\033[0m"
+		prefixWarn  = "\033[33mWARN \033[0m"
+		prefixInfo  = "\033[32mINFO \033[0m"
+		prefixDebug = "\033[36mDEBUG\033[0m"
+		prefixTrace = "\033[36mTRACE\033[0m"
+	}
+}
 
 const (
 	timeStampFmt = "[2006-01-02T15:04:05.000Z07:00]"
+	nlPadding    = "\n    "
 )
 
-var nlPadding string
 var replace = regexp.MustCompile("\n[ \t]*")
-
-func init() {
-	buf := strings.Builder{}
-	ln := len(timeStampFmt) + 8
-
-	buf.Grow(ln)
-	buf.Reset()
-
-	buf.WriteByte('\n')
-	for i := 1; i < ln; i++ {
-		buf.WriteByte(' ')
-	}
-
-	nlPadding = buf.String()
-}
 
 func SetVerbosity(lvl uint8) {
 	verbose = lvl
