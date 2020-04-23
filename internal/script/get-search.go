@@ -21,6 +21,7 @@ func (r *Runner) processShortSearch(
 ) {
 	if ok := exclusions[sSearch.UrlSegment]; ok {
 		log.DebugFmt("Skipping search \"$s\", it is marked as excluded.")
+		r.stats.SearchDetailSkipped()
 		return
 	}
 
@@ -35,10 +36,12 @@ func (r *Runner) processShortSearch(
 
 		if code := res.MustGetResponseCode(); code != http.StatusOK {
 			out.GetSearchError(code, fullUrl, res.MustGetBody())
+			r.stats.SearchDetailFailed()
 			return
 		}
 
 		res.MustUnmarshalBody(&search, R.UnmarshallerFunc(json.Unmarshal))
+		r.stats.SearchDetailSuccess()
 
 		if r.opts.SearchEnabled() {
 			r.processSearch(record, search)

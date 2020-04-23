@@ -2,6 +2,7 @@ package script
 
 import (
 	"encoding/json"
+	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"os"
 	"os/signal"
 	"time"
@@ -24,7 +25,7 @@ import (
 //       record_details = get_record_details(record_name)
 //       foreach(search_summary in record_details.searches)
 //         search_details = get_search_details(search_summary)
-func (r *Runner) Run() {
+func (r *Runner) Run() out.Summary {
 	recordTypes := make([]string, 0, 25)
 
 	R.GetRequest(r.url.RecordTypeListUrl()).
@@ -42,6 +43,7 @@ func (r *Runner) Run() {
 	}
 
 	r.wp.StopWait()
+	return r.stats
 }
 
 func enableOsSignalHandler(r *Runner) {

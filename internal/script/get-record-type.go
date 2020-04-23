@@ -26,10 +26,12 @@ func (r *Runner) processRecordType(rType string) {
 		res := util.GetRequest(fullUrl, &r.client)
 		if code := res.MustGetResponseCode(); code != http.StatusOK {
 			out.GetRequestError(code, fullUrl, res.MustGetBody())
+			r.stats.RecordTypeFailed()
 			return
 		}
 
 		res.MustUnmarshalBody(record, R.UnmarshallerFunc(json.Unmarshal))
+		r.stats.RecordTypeSuccess()
 
 		for i := range record.Searches {
 			r.processShortSearch(record, &record.Searches[i])

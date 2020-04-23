@@ -2,6 +2,7 @@ package script
 
 import (
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
+	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"net/http"
 	"sync"
 	"time"
@@ -18,6 +19,7 @@ type status struct {
 }
 
 type Runner struct {
+	stats  out.Summary
 	queued map[string]*status
 	lock   sync.RWMutex
 	wp     *workerpool.WorkerPool

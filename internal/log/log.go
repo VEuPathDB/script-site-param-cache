@@ -41,57 +41,50 @@ func SetVerbosity(lvl uint8) {
 }
 
 func ErrorFmt(message string, vals ...interface{}) {
-	_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixError,
-		nlPad(fmt.Sprintf(message, vals...)))
-}
-
-func Error(vals ...interface{}) {
-	_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixError, nlPad(fmt.Sprint(vals...)))
-}
-
-func WarnFmt(message string, vals ...interface{}) {
-	_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixWarn,
-		nlPad(fmt.Sprintf(message, vals...)))
-}
-
-func Warn(vals ...interface{}) {
-	_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixWarn, nlPad(fmt.Sprint(vals...)))
+	if verbose > 0 {
+		_, _ = fmt.Fprintln(os.Stderr, nowStamp(), prefixError,
+			nlPad(fmt.Sprintf(message, vals...)))
+	}
 }
 
 func InfoFmt(message string, vals ...interface{}) {
-	fmt.Println(nowStamp(), prefixInfo, nlPad(fmt.Sprintf(message, vals...)))
+	if verbose > 1 {
+		fmt.Println(nowStamp(), prefixInfo, nlPad(fmt.Sprintf(message, vals...)))
+	}
 }
 
 func Info(vals ...interface{}) {
-	fmt.Println(nowStamp(), prefixInfo, nlPad(fmt.Sprint(vals...)))
+	if verbose > 1 {
+		fmt.Println(nowStamp(), prefixInfo, nlPad(fmt.Sprint(vals...)))
+	}
 }
 
 func DebugFmt(message string, vals ...interface{}) {
-	if verbose > 0 {
+	if verbose > 2 {
 		fmt.Println(nowStamp(), prefixDebug, nlPad(fmt.Sprintf(message, vals...)))
 	}
 }
 
 func Debug(vals ...interface{}) {
-	if verbose > 0 {
+	if verbose > 2 {
 		fmt.Println(nowStamp(), prefixDebug, nlPad(fmt.Sprint(vals...)))
 	}
 }
 
 func TraceFmt(message string, vals ...interface{}) {
-	if verbose > 1 {
+	if verbose > 3 {
 		fmt.Println(nowStamp(), prefixTrace, nlPad(fmt.Sprintf(message, vals...)))
 	}
 }
 
 func Trace(vals ...interface{}) {
-	if verbose > 1 {
+	if verbose > 3 {
 		fmt.Println(nowStamp(), prefixTrace, nlPad(fmt.Sprint(vals...)))
 	}
 }
 
 func TraceFn(fn func() []interface{}) {
-	if verbose > 1 {
+	if verbose > 3 {
 		fmt.Println(nowStamp(), prefixTrace, nlPad(fmt.Sprint(fn()...)))
 	}
 }

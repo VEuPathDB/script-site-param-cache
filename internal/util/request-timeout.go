@@ -4,7 +4,7 @@ import "time"
 
 type RequestTimeout time.Duration
 
-func (r *RequestTimeout) UnmarshalFlag(value string) error {
+func (r *RequestTimeout) Unmarshal(value string) error {
 	tmp, err := time.ParseDuration(value)
 	*r = RequestTimeout(tmp)
 	return err
