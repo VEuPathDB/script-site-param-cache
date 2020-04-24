@@ -18,6 +18,7 @@ type cliOptions struct {
 	ThreadNum   uint8
 	Verbose     int
 	SiteUrl     string
+	api         wdk.Api
 }
 
 func (c *cliOptions) VerboseLevel() uint8 {
@@ -54,8 +55,13 @@ func (c *cliOptions) SummaryType() SummaryType {
 	return c.ShowSummary
 }
 
+func (c *cliOptions) WdkApi() wdk.Api {
+	return c.api
+}
+
 func (c *cliOptions) validate() {
 	defer x.PanicRecovery()
 
-	c.SiteUrl = wdk.ForceNew(c.SiteUrl).GetUrl().String()
+	c.api = wdk.ForceNew(c.SiteUrl)
+	c.SiteUrl = c.api.GetUrl().String()
 }

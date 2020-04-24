@@ -2,6 +2,7 @@ package script
 
 import (
 	"encoding/json"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
 	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"net/http"
 
@@ -21,7 +22,7 @@ var (
 )
 
 func (r *Runner) processSearch(
-	record *recordtypes.RecordType,
+	record *recordTypes.RecordTypeResponse,
 	search *recordtypes.FullSearch,
 ) {
 	fullUrl := r.url.RecordSearchStdReportUrl(record.UrlSegment, search.SearchData.UrlSegment)
@@ -46,7 +47,7 @@ func (r *Runner) processSearch(
 }
 
 func prepareSearchRequest(
-	record *recordtypes.RecordType,
+	record *recordTypes.RecordTypeResponse,
 	search *recordtypes.Search,
 ) (ret *recordtypes.OrganismSearchRequest, ok bool) {
 	ret = recordtypes.NewOrganismSearchRequest()

@@ -1,6 +1,7 @@
 package script
 
 import (
+	wdk "github.com/VEuPathDB/lib-go-wdk-api/v0"
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"net/http"
@@ -26,6 +27,7 @@ type Runner struct {
 	url    veupath.ApiUrlBuilder
 	opts   config.CliOptions
 	client http.Client
+	api    wdk.Api
 }
 
 func NewRunner(opt config.CliOptions) (runner *Runner) {
@@ -35,6 +37,7 @@ func NewRunner(opt config.CliOptions) (runner *Runner) {
 		url:    veupath.NewApiUrlBuilder(opt.BaseUrl()),
 		opts:   opt,
 		client: http.Client{Timeout: opt.RequestTimeout()},
+		api:    opt.WdkApi(),
 	}
 	runner.url.SetAuthTkt(opt.AuthToken())
 	printSetup(runner)

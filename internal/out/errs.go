@@ -3,6 +3,7 @@ package out
 import (
 	"encoding/json"
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 	"strings"
 )
@@ -62,7 +63,7 @@ func GetSearchError(code uint16, url string, response []byte) {
 func WarnCannotRun(
 	identifier string,
 	search *recordtypes.Search,
-	recordType *recordtypes.RecordType,
+	recordType *recordTypes.RecordTypeResponse,
 ) {
 	log.TraceFmt(warnNogo, identifier, search.UrlSegment, recordType.UrlSegment)
 }

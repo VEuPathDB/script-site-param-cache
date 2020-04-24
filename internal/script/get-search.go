@@ -3,11 +3,13 @@ package script
 import (
 	"encoding/json"
 	R "github.com/Foxcapades/Go-ChainRequest/simple"
+	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes/searches"
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"net/http"
 
-	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
 	"github.com/VEuPathDB/script-site-param-cache/internal/util"
 	"github.com/VEuPathDB/script-site-param-cache/internal/x"
 )
@@ -16,8 +18,8 @@ import (
 // search and record type.  Optionally runs the search if
 // search running is enabled.
 func (r *Runner) processShortSearch(
-	record *recordtypes.RecordType,
-	sSearch *recordtypes.Search,
+	record *recordTypes.RecordTypeResponse,
+	sSearch *searches.SearchResponse,
 ) {
 	if ok := exclusions[sSearch.UrlSegment]; ok {
 		log.DebugFmt("Skipping search \"$s\", it is marked as excluded.")

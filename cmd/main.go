@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	wdk "github.com/VEuPathDB/lib-go-wdk-api/v0"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 	"os"
 	"time"
@@ -18,6 +20,7 @@ var version string
 func main() {
 	defer x.PanicRecovery()
 	start := time.Now()
+	wdk.Logger().SetLevel(logrus.TraceLevel)
 	opts, validator := config.GetCliOptions(version)
 
 	log.SetVerbosity(opts.VerboseLevel())

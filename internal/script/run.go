@@ -1,13 +1,10 @@
 package script
 
 import (
-	"encoding/json"
 	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"os"
 	"os/signal"
 	"time"
-
-	R "github.com/Foxcapades/Go-ChainRequest/simple"
 
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 )
@@ -26,14 +23,13 @@ import (
 //       foreach(search_summary in record_details.searches)
 //         search_details = get_search_details(search_summary)
 func (r *Runner) Run() out.Summary {
-	recordTypes := make([]string, 0, 25)
+	recordTypes := r.api.MustGetExpandedRecordTypes()
 
-	R.GetRequest(r.url.RecordTypeListUrl()).
-		SetHttpClient(&r.client).Submit().
-		MustUnmarshalBody(&recordTypes, R.UnmarshallerFunc(json.Unmarshal))
-
-	for _, rType := range recordTypes {
-		r.processRecordType(rType)
+	for i := range recordTypes {
+		rt := &recordTypes[i]
+		for j := range rt.Searches {
+			r.processShortSearch(rt, &rt.Searches[j])
+		}
 	}
 
 	enableOsSignalHandler(r)

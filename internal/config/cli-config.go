@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	wdk "github.com/VEuPathDB/lib-go-wdk-api/v0"
 	"os"
 	"time"
 
@@ -18,6 +19,7 @@ type CliOptions interface {
 	BaseUrl() string
 	PrintSummary() bool
 	SummaryType() SummaryType
+	WdkApi() wdk.Api
 }
 
 type ValidatorFunc func()
