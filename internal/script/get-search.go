@@ -31,7 +31,7 @@ func (r *Runner) processShortSearch(
 	sSearch *searches.SearchResponse,
 ) {
 	if ok := exclusions[sSearch.UrlSegment]; ok {
-		log.InfoFmt("Skipping search \"$s\", it is marked as excluded.")
+		log.InfoFmt("Skipping search \"%s\", it is marked as excluded.", sSearch.FullName)
 		r.stats.SearchDetailSkipped()
 		return
 	}
