@@ -62,6 +62,6 @@ func (c *cliOptions) WdkApi() wdk.Api {
 func (c *cliOptions) validate() {
 	defer x.PanicRecovery()
 
-	c.api = wdk.ForceNew(c.SiteUrl)
+	c.api = wdk.ForceNew(c.SiteUrl).UseAuthToken(c.Auth)
 	c.SiteUrl = c.api.GetUrl().String()
 }
