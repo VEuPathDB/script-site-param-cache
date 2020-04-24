@@ -14,6 +14,15 @@ import (
 	"github.com/VEuPathDB/script-site-param-cache/internal/x"
 )
 
+// Searches that cannot be looked up due to the guest user
+// not having the necessary prerequisites for those searches
+// to be available
+var exclusions = map[string]bool{
+	"GenesByUserDatasetAntisense": true,
+	"GenesByRNASeqUserDataset": true,
+	"DatasetsByReferenceName": true,
+}
+
 // retrieves the full search details json for a given
 // search and record type.  Optionally runs the search if
 // search running is enabled.
@@ -22,7 +31,7 @@ func (r *Runner) processShortSearch(
 	sSearch *searches.SearchResponse,
 ) {
 	if ok := exclusions[sSearch.UrlSegment]; ok {
-		log.DebugFmt("Skipping search \"$s\", it is marked as excluded.")
+		log.InfoFmt("Skipping search \"$s\", it is marked as excluded.")
 		r.stats.SearchDetailSkipped()
 		return
 	}
@@ -51,12 +60,4 @@ func (r *Runner) processShortSearch(
 	}))
 }
 
-// Searches that cannot be looked up due to the guest user
-// not having the necessary prerequisites for those searches
-// to be available
-var exclusions = map[string]bool{
-	"GenesByUserDatasetAntisense": true,
-	"GenesByRNASeqUserDataset": true,
-	"DatasetsByReferenceName": true,
-}
 
