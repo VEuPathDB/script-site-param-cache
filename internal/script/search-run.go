@@ -5,6 +5,7 @@ import (
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
 	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"net/http"
+	"time"
 
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
 	"github.com/VEuPathDB/script-site-param-cache/internal/util"
@@ -38,7 +39,8 @@ func (r *Runner) processSearch(
 			return
 		}
 
-		res := util.PostRequest(fullUrl, &r.client, inputBody)
+		var timing time.Duration
+		res := util.PostRequest(fullUrl, &r.client, &timing, inputBody)
 
 		if code := res.MustGetResponseCode(); code != http.StatusOK {
 			out.PostRequestError(code, fullUrl, res.MustGetBody(), search, inputBody)

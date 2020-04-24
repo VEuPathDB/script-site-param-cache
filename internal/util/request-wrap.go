@@ -18,10 +18,11 @@ const (
 func PostRequest(
 	url string,
 	client *http.Client,
+	timing *time.Duration,
 	body interface{},
 ) (res creq.Response) {
 	start := time.Now()
-	defer func() { printRequestStats(http.MethodPost, url, start, res) }()
+	defer func() { printRequestStats(http.MethodPost, url, start, timing, res) }()
 	printRequestStart(http.MethodPost, url, body)
 
 	res = req.PostRequest(url).SetHeader(header.CONTENT_TYPE, "application/json").
@@ -30,9 +31,9 @@ func PostRequest(
 	return
 }
 
-func GetRequest(url string, client *http.Client) (res creq.Response) {
+func GetRequest(url string, timing *time.Duration, client *http.Client) (res creq.Response) {
 	start := time.Now()
-	defer func() { printRequestStats(http.MethodGet, url, start, res) }()
+	defer func() { printRequestStats(http.MethodGet, url, start, timing, res) }()
 	printRequestStart(http.MethodGet, url, nil)
 
 	res = req.GetRequest(url).SetHttpClient(client).Submit()
@@ -40,7 +41,7 @@ func GetRequest(url string, client *http.Client) (res creq.Response) {
 }
 
 func printRequestStart(method, url string, body interface{}) {
-	log.DebugFmt("Starting %s Request\nURL: %s", method, url)
+	log.TraceFmt("Starting %s Request\nURL: %s", method, url)
 	if body != nil {
 		log.TraceFn(func() []interface{} {
 			return []interface{}{"Payload:", string(x.JsonMarshal(body))}
@@ -48,8 +49,9 @@ func printRequestStart(method, url string, body interface{}) {
 	}
 }
 
-func printRequestStats(method, url string, start time.Time, res creq.Response) {
+func printRequestStats(method, url string, start time.Time, timing *time.Duration, res creq.Response) {
 	dur := time.Now().Sub(start)
+	*timing = dur
 
 	if res.GetError() != nil {
 		log.DebugFmt(reqEndText, method, "failed", "", url, dur)

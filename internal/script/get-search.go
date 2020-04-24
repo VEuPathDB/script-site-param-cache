@@ -2,13 +2,15 @@ package script
 
 import (
 	"encoding/json"
+	"net/http"
+	"time"
+
 	R "github.com/Foxcapades/Go-ChainRequest/simple"
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes/searches"
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 	"github.com/VEuPathDB/script-site-param-cache/internal/out"
-	"net/http"
 
 	"github.com/VEuPathDB/script-site-param-cache/internal/util"
 	"github.com/VEuPathDB/script-site-param-cache/internal/x"
@@ -43,13 +45,16 @@ func (r *Runner) processShortSearch(
 		defer r.pop(fullUrl)
 		search := new(recordtypes.FullSearch)
 
-		res := util.GetRequest(fullUrl, &r.client)
+		var timing time.Duration
+		res := util.GetRequest(fullUrl, &timing, &r.client)
 
 		if code := res.MustGetResponseCode(); code != http.StatusOK {
 			out.GetSearchError(code, fullUrl, res.MustGetBody())
 			r.stats.SearchDetailFailed()
 			return
 		}
+
+		r.stats.RecordTiming(sSearch.FullName, timing)
 
 		res.MustUnmarshalBody(&search, R.UnmarshallerFunc(json.Unmarshal))
 		r.stats.SearchDetailSuccess()
