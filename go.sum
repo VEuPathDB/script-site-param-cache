@@ -10,6 +10,8 @@ github.com/VEuPathDB/lib-go-wdk-api v0.0.18-0.20200424145817-5dbb97bb6d53 h1:9Xn
 github.com/VEuPathDB/lib-go-wdk-api v0.0.18-0.20200424145817-5dbb97bb6d53/go.mod h1:J1zVm1B3anyBMHidLPgGVN3D3SROb+tYWk53grM+fAM=
 github.com/VEuPathDB/lib-go-wdk-api v0.0.18-0.20200424150123-bf0043dc4802 h1:f9ztI9GYybBCMgRbgxhdyzjqeBof8lHtdAO1Y1MG94g=
 github.com/VEuPathDB/lib-go-wdk-api v0.0.18-0.20200424150123-bf0043dc4802/go.mod h1:J1zVm1B3anyBMHidLPgGVN3D3SROb+tYWk53grM+fAM=
+github.com/VEuPathDB/lib-go-wdk-api v0.0.19-0.20200427165120-d6d29c663c94 h1:WZAjZAJX42oVReKKLYIoH9HTN+iavIJmz82XFyH9lMQ=
+github.com/VEuPathDB/lib-go-wdk-api v0.0.19-0.20200427165120-d6d29c663c94/go.mod h1:J1zVm1B3anyBMHidLPgGVN3D3SROb+tYWk53grM+fAM=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/gammazero/deque v0.0.0-20200227231300-1e9af0e52b46 h1:iX4+rD9Fjdx8SkmSO/O5WAIX/j79ll3kuqv5VdYt9J8=
