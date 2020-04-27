@@ -10,9 +10,9 @@ import (
 	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes/searches"
+
 	"github.com/VEuPathDB/script-site-param-cache/internal/log"
 	"github.com/VEuPathDB/script-site-param-cache/internal/out"
-
 	"github.com/VEuPathDB/script-site-param-cache/internal/util"
 	"github.com/VEuPathDB/script-site-param-cache/internal/x"
 )
