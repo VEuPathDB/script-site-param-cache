@@ -2,6 +2,7 @@ package script
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -43,6 +44,11 @@ func (r *Runner) processShortSearch(
 	r.wp.Submit(x.PanicCatcher(func() {
 		r.start(fullUrl)
 		defer r.pop(fullUrl)
+		defer func() {
+			if r := recover(); r != nil {
+				out.GetSearchError(0, fullUrl, []byte(fmt.Sprint(r)))
+			}
+		}()
 		search := new(recordtypes.FullSearch)
 
 		var timing time.Duration
