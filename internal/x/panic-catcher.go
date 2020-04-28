@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/VEuPathDB/script-site-param-cache/internal/log"
+	log "github.com/sirupsen/logrus"
 )
 
 func PanicCatcher(fn func()) func() {
@@ -19,12 +19,12 @@ func PanicRecovery() {
 	if rec := recover(); rec != nil {
 		if e, ok := rec.(*url.Error); ok {
 			if e.Err.Error() == context.DeadlineExceeded.Error() {
-				log.ErrorFmt("Timed out while trying to reach %s", e.URL)
+				log.Errorf("Timed out while trying to reach %s", e.URL)
 				os.Exit(1)
 			}
 		}
 
-		log.ErrorFmt("%s", rec)
+		log.Errorf("%s", rec)
 		os.Exit(1)
 	}
 }

@@ -2,10 +2,12 @@ package out
 
 import (
 	"encoding/json"
-	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
-	"github.com/VEuPathDB/script-site-param-cache/internal/log"
+	log "github.com/sirupsen/logrus"
 	"strings"
+
+	"github.com/VEuPathDB/lib-go-rest-types/veupath/service/recordtypes"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/record"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/search"
 )
 
 const (
@@ -19,17 +21,10 @@ const (
 		Search:  %s
 		Payload: %s`
 
-	getReqErr = `GET request failed with code %d
-		URL:     %s
-		Message: %s`
-
 	getSearchErr = `Search lookup failed with code %d
 		Service Url: %s
 		App Url:     %s
 		Response:    %s`
-
-	vocabParse = `Failed to parse vocabulary for %s
-		Search: %s`
 )
 
 
@@ -39,38 +34,27 @@ func PostRequestError(
 	code uint16,
 	url string,
 	response []byte,
-	search *recordtypes.FullSearch,
+	search *search.FullSearch,
 	payload *recordtypes.OrganismSearchRequest,
 ) {
 	sea, _ := json.Marshal(search)
 	pay, _ := json.Marshal(payload)
-	log.ErrorFmt(postReqErr, code, trimTok(url), string(response), sea, pay)
-}
-
-// GetRequestError prints a formatted error message about an
-// arbitrary GET request that failed.
-func GetRequestError(code uint16, url string, response []byte) {
-	log.ErrorFmt(getReqErr, code, trimTok(url), string(response))
+	log.Errorf(postReqErr, code, trimTok(url), string(response), sea, pay)
 }
 
 // GetSearchError prints a formatted error message about a
 // search lookup request that failed.
 func GetSearchError(code uint16, url string, response []byte) {
 	url = trimTok(url)
-	log.ErrorFmt(getSearchErr, code, url, convertUrl(url), string(response))
+	log.Errorf(getSearchErr, code, url, convertUrl(url), string(response))
 }
 
 func WarnCannotRun(
 	identifier string,
-	search *recordtypes.Search,
-	recordType *recordTypes.RecordTypeResponse,
+	search *search.FullSearch,
+	recordType *record.Type,
 ) {
-	log.TraceFmt(warnNogo, identifier, search.UrlSegment, recordType.UrlSegment)
-}
-
-func VocabParseErr(paramType string, search *recordtypes.Search) {
-	b, _ := json.Marshal(search)
-	log.ErrorFmt(vocabParse, paramType, string(b))
+	log.Tracef(warnNogo, identifier, search.UrlSegment, recordType.UrlSegment)
 }
 
 func trimTok(url string) string {

@@ -1,17 +1,17 @@
 package script
 
 import (
-	wdk "github.com/VEuPathDB/lib-go-wdk-api/v0"
-	"github.com/VEuPathDB/script-site-param-cache/internal/log"
-	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"net/http"
 	"sync"
 	"time"
 
+	"github.com/VEuPathDB/lib-go-wdk-api/v0"
 	"github.com/gammazero/workerpool"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/VEuPathDB/lib-go-rest-types/veupath"
 	"github.com/VEuPathDB/script-site-param-cache/internal/config"
+	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 )
 
 type status struct {
@@ -77,7 +77,7 @@ func (r *Runner) queueLen() (out int) {
 
 func printSetup(r *Runner) {
 	log.Debug("Setting up runner")
-	log.TraceFmt(
+	log.Tracef(
 		`Base URL:     %s
      Timeout:      %s
      Threads:      %d

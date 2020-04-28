@@ -1,8 +1,9 @@
 package script
 
 import (
-	"encoding/json"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/param"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/record"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/search"
 	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 	"net/http"
 	"time"
@@ -16,15 +17,15 @@ var (
 	disallowedParamNames = map[string]bool{
 		"primaryKeys": false, // can't auto-populate this
 	}
-	disallowedParamTypes = map[string]bool{
-		"input-step":    false, // we don't have any step ids
-		"input-dataset": false, // we don't have any dataset ids
+	disallowedParamTypes = map[param.Kind]bool{
+		param.KindAnswer:  false, // we don't have any step ids
+		param.KindDataset: false, // we don't have any dataset ids
 	}
 )
 
 func (r *Runner) processSearch(
-	record *recordTypes.RecordTypeResponse,
-	search *recordtypes.FullSearch,
+	record *record.Type,
+	search *search.ValidatedSearch,
 ) {
 	fullUrl := r.url.RecordSearchStdReportUrl(record.UrlSegment, search.SearchData.UrlSegment)
 
@@ -43,14 +44,15 @@ func (r *Runner) processSearch(
 		res := util.PostRequest(fullUrl, &r.client, &timing, inputBody)
 
 		if code := res.MustGetResponseCode(); code != http.StatusOK {
-			out.PostRequestError(code, fullUrl, res.MustGetBody(), search, inputBody)
+			out.PostRequestError(code, fullUrl, res.MustGetBody(),
+				&search.SearchData, inputBody)
 		}
 	}))
 }
 
 func prepareSearchRequest(
-	record *recordTypes.RecordTypeResponse,
-	search *recordtypes.Search,
+	record *record.Type,
+	search *search.FullSearch,
 ) (ret *recordtypes.OrganismSearchRequest, ok bool) {
 	ret = recordtypes.NewOrganismSearchRequest()
 
@@ -63,40 +65,40 @@ func prepareSearchRequest(
 			return nil, false
 		}
 
-		if _, ok := disallowedParamTypes[tmp.Type]; ok {
-			out.WarnCannotRun("type: "+tmp.Type, search, record)
+		if _, ok := disallowedParamTypes[tmp.Kind]; ok {
+			out.WarnCannotRun("type: " + string(tmp.Kind), search, record)
 			return nil, false
 		}
 
-		if tmp.Type == "multi-pick-vocabulary" {
+		if tmp.Kind == param.KindMultiVocab {
 
-			if tmp.Vocabulary == nil {
+			enum := tmp.AsKindMultiVocab()
+
+			if enum.Vocabulary.Exists() {
 				ret.SearchConfig.Parameters[tmp.Name] = `["yes"]`
 				continue
 			}
 
-			if tmp.DisplayType != nil {
-				switch *tmp.DisplayType {
-				case "treeBox":
-					if val, ok := treeBoxParam(tmp, search); ok {
-						ret.SearchConfig.Parameters[tmp.Name] = val
-						continue
-					} else {
-						return nil, false
-					}
-				case "typeAhead", "checkBox":
-					if val, ok := enumParam(tmp, search); ok {
-						ret.SearchConfig.Parameters[tmp.Name] = val
-						continue
-					} else {
-						return nil, false
-					}
+			switch enum.DisplayType {
+			case param.DisplayTypeTreeBox:
+				if val, ok := treeBoxParam(&enum); ok {
+					ret.SearchConfig.Parameters[enum.Name] = val
+					continue
+				} else {
+					return nil, false
+				}
+			case param.DisplayTypeTypeAhead, param.DisplayTypeCheckBox:
+				if val, ok := enumParam(&enum); ok {
+					ret.SearchConfig.Parameters[enum.Name] = val
+					continue
+				} else {
+					return nil, false
 				}
 			}
 		}
 
-		if len(tmp.InitialDisplayValue) > 0 {
-			ret.SearchConfig.Parameters[tmp.Name] = tmp.InitialDisplayValue
+		if tmp.InitialDisplayValue.Exists() {
+			ret.SearchConfig.Parameters[tmp.Name] = tmp.InitialDisplayValue.Get()
 		} else {
 			ret.SearchConfig.Parameters[tmp.Name] = "1"
 		}
@@ -107,17 +109,8 @@ func prepareSearchRequest(
 	return ret, true
 }
 
-func treeBoxParam(
-	param *recordtypes.Parameter,
-	search *recordtypes.Search,
-) (val string, ok bool) {
-	voc := new(recordtypes.EnumParamTermNode)
-	err := json.Unmarshal(param.Vocabulary, voc)
-
-	if err != nil {
-		out.VocabParseErr("tree box", search)
-		return "", false
-	}
+func treeBoxParam(param *param.Enum) (val string, ok bool) {
+	voc := param.Vocabulary.GetAsTree()
 
 	if voc.Data.Term == "@@fake@@" && len(voc.Children) > 0 {
 		voc = &voc.Children[0]
@@ -126,17 +119,8 @@ func treeBoxParam(
 	return `["` + voc.Data.Term + `"]`, true
 }
 
-func enumParam(
-	param *recordtypes.Parameter,
-	search *recordtypes.Search,
-) (val string, ok bool) {
-	voc := make([][3]string, 0, 15)
-	err := json.Unmarshal(param.Vocabulary, &voc)
-
-	if err != nil {
-		out.VocabParseErr("enum param", search)
-		return "", false
-	}
+func enumParam(param *param.Enum) (val string, ok bool) {
+	voc := param.Vocabulary.GetAsTable()
 
 	return `["` + voc[0][0] + `"]`, true
 }

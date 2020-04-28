@@ -6,10 +6,15 @@ require (
 	github.com/Foxcapades/Argonaut v0.1.7
 	github.com/Foxcapades/Go-ChainRequest v2.7.4+incompatible
 	github.com/VEuPathDB/lib-go-rest-types v0.1.6
-	github.com/VEuPathDB/lib-go-wdk-api v0.0.19-0.20200427165120-d6d29c663c94
+	github.com/VEuPathDB/lib-go-wdk-api v0.0.19-0.20200428013612-98fa1902d142
 	github.com/gammazero/workerpool v0.0.0-20200311205957-7b00833861c6
-	github.com/jessevdk/go-flags v1.4.0
-	github.com/mattn/go-isatty v0.0.12
+	github.com/jessevdk/go-flags v1.4.0 // indirect
+	github.com/mattn/go-colorable v0.1.6 // indirect
+	github.com/mattn/go-isatty v0.0.12 // indirect
+	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
+	github.com/onsi/ginkgo v1.12.0 // indirect
+	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/sirupsen/logrus v1.5.0
+	github.com/x-cray/logrus-prefixed-formatter v0.5.2
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 )

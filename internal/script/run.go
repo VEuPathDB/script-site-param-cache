@@ -1,12 +1,12 @@
 package script
 
 import (
-	"github.com/VEuPathDB/script-site-param-cache/internal/out"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
 	"time"
 
-	"github.com/VEuPathDB/script-site-param-cache/internal/log"
+	"github.com/VEuPathDB/script-site-param-cache/internal/out"
 )
 
 // Run executes the param cache script logic.
@@ -22,8 +22,10 @@ import (
 //       record_details = get_record_details(record_name)
 //       foreach(search_summary in record_details.searches)
 //         search_details = get_search_details(search_summary)
-func (r *Runner) Run() out.Summary {
+func (r *Runner) Run() *out.Summary {
+	start := time.Now()
 	recordTypes := r.api.MustGetExpandedRecordTypes()
+	log.WithField("time", time.Since(start)).Debug("Successful record-types GET")
 
 	for i := range recordTypes {
 		rt := &recordTypes[i]
@@ -39,7 +41,7 @@ func (r *Runner) Run() out.Summary {
 	}
 
 	r.wp.StopWait()
-	return r.stats
+	return &r.stats
 }
 
 func enableOsSignalHandler(r *Runner) {
@@ -49,12 +51,12 @@ func enableOsSignalHandler(r *Runner) {
 		r.lock.RLock()
 
 		now := time.Now()
-		log.InfoFmt("Killing process with %d requests still in progress", len(r.queued))
+		log.Infof("Killing process with %d requests still in progress", len(r.queued))
 		for k, v := range r.queued {
 			if v.started.Before(v.queued) {
-				log.InfoFmt("Queued request to %s. (Queued for %s)", k, now.Sub(v.queued))
+				log.Infof("Queued request to %s. (Queued for %s)", k, now.Sub(v.queued))
 			} else {
-				log.InfoFmt("Running request to %s. (Running for %s)", k, now.Sub(v.started))
+				log.Infof("Running request to %s. (Running for %s)", k, now.Sub(v.started))
 			}
 		}
 		os.Exit(0)
