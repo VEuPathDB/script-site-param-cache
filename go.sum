@@ -4,8 +4,8 @@ github.com/Foxcapades/Go-ChainRequest v2.7.4+incompatible h1:hUmvv11pLn3oNv8LSom
 github.com/Foxcapades/Go-ChainRequest v2.7.4+incompatible/go.mod h1:sKBa2PYX7hjF4rQLnUKUPj2QuhTUm417vKB/oqDeXJE=
 github.com/VEuPathDB/lib-go-rest-types v0.1.6 h1:eJYpBWDUCvnn/ruQ08Y/EW5rkyJT4rTX24L6Qtb7c5c=
 github.com/VEuPathDB/lib-go-rest-types v0.1.6/go.mod h1:O7nKy0LMNPMHyj12bE4IvuZ2vfZ9j4WaIs72uk7wMNQ=
-github.com/VEuPathDB/lib-go-wdk-api v0.0.19 h1:kKX5AtCIAEvmwC74Iu5RWx5P76yrsMDi33sxNp0pEnA=
-github.com/VEuPathDB/lib-go-wdk-api v0.0.19/go.mod h1:J1zVm1B3anyBMHidLPgGVN3D3SROb+tYWk53grM+fAM=
+github.com/VEuPathDB/lib-go-wdk-api v0.0.20 h1:U9elnVu+VNmcjUY9YtZo2BBWJPcdeGtqg0lW55wNdRQ=
+github.com/VEuPathDB/lib-go-wdk-api v0.0.20/go.mod h1:J1zVm1B3anyBMHidLPgGVN3D3SROb+tYWk53grM+fAM=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
