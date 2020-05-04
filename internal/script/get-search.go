@@ -63,8 +63,8 @@ func (r *Runner) processShortSearch(
 
 			if cst, ok := err.(except.HttpRequestError); ok {
 				var code uint16
-				if cst.ResponseCode().Exists() {
-					code = uint16(cst.ResponseCode().Get())
+				if cst.ResponseCode() != nil {
+					code = uint16(*cst.ResponseCode())
 				}
 
 				out.GetSearchError(code, fullUrl, cst.ResponseBody())

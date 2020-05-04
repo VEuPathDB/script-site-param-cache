@@ -24,7 +24,7 @@ import (
 //         search_details = get_search_details(search_summary)
 func (r *Runner) Run() *out.Summary {
 	start := time.Now()
-	recordTypes := r.api.MustGetExpandedRecordTypes()
+	recordTypes := r.api.MustGetRecordTypes()
 	log.WithField("time", time.Since(start)).Debug("Successful record-types GET")
 
 	for i := range recordTypes {

@@ -97,8 +97,8 @@ func prepareSearchRequest(
 			}
 		}
 
-		if tmp.InitialDisplayValue.Exists() {
-			ret.SearchConfig.Parameters[tmp.Name] = tmp.InitialDisplayValue.Get()
+		if tmp.InitialDisplayValue != nil {
+			ret.SearchConfig.Parameters[tmp.Name] = *tmp.InitialDisplayValue
 		} else {
 			ret.SearchConfig.Parameters[tmp.Name] = "1"
 		}
