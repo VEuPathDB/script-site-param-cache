@@ -37,7 +37,7 @@ func printRequestStart(method, url string, body interface{}) {
 	log.Tracef("Starting %s Request\nURL: %s", method, url)
 	if log.IsLevelEnabled(log.TraceLevel) {
 		if body != nil {
-			log.Tracef("Payload:", string(x.JsonMarshal(body)))
+			log.Trace("Payload:", string(x.JsonMarshal(body)))
 		}
 	}
 }
@@ -61,5 +61,5 @@ func printRequestStats(method, url string, start time.Time, timing *time.Duratio
 	}
 
 	log.Debugf(reqEndText, method, "completed", succ, url, dur)
-	log.Tracef("Message Body:", string(res.MustGetBody()))
+	log.Trace("Message Body:", string(res.MustGetBody()))
 }
